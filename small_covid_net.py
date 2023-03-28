@@ -38,7 +38,7 @@ class PEPX_Downsample(PEPX):
     """Same as pepx but makes the input smaller by half"""
     def __init__(self, in_channels, out_channels, expansion_factor=4):
         super(PEPX_Downsample, self).__init__(in_channels, out_channels, expansion_factor)
-        self.downsample = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.downsample = nn.MaxPool2d(kernel_size=4, stride=4)
         
     def forward(self, x):
         x = self.projection(x)
@@ -61,10 +61,10 @@ class COVIDNet(nn.Module):
         # first conv layer
         self.conv7x7 = nn.Conv2d(3, 56, kernel_size=7, stride=2, padding=3)
         # top conv layers
-        self.conv1 = nn.Conv2d(56, 56, kernel_size=2, stride=2)
-        self.conv2 = nn.Conv2d(56 * 4, 112, kernel_size=2, stride=2)
-        self.conv3 = nn.Conv2d(112 * 5, 224, kernel_size=2, stride=2)
-        self.conv4 = nn.Conv2d(216 * 5 + 224 * 2, 424, kernel_size=2, stride=2)
+        self.conv1 = nn.Conv2d(56, 56, kernel_size=4, stride=4)
+        self.conv2 = nn.Conv2d(56 * 4, 112, kernel_size=4, stride=4)
+        # self.conv3 = nn.Conv2d(112 * 5, 224, kernel_size=2, stride=2)
+        # self.conv4 = nn.Conv2d(216 * 5 + 224 * 2, 424, kernel_size=2, stride=2)
 
         # pepx layers
         self.pepx11 = PEPX_Downsample(56, 56)
@@ -76,28 +76,28 @@ class COVIDNet(nn.Module):
         self.pepx23 = PEPX(112 * 3, 112)
         self.pepx24 = PEPX(112 * 4, 112)
 
-        self.pepx31 = PEPX_Downsample(112 * 5, 216)
-        self.pepx32 = PEPX(216 + 224, 216)
-        self.pepx33 = PEPX(216 * 2 + 224, 216)
-        self.pepx34 = PEPX(216 * 3 + 224, 216)
-        self.pepx35 = PEPX(216 * 4 + 224, 216)
-        self.pepx36 = PEPX(216 * 5 + 224, 224)
+        # self.pepx31 = PEPX_Downsample(112 * 5, 216)
+        # self.pepx32 = PEPX(216 + 224, 216)
+        # self.pepx33 = PEPX(216 * 2 + 224, 216)
+        # self.pepx34 = PEPX(216 * 3 + 224, 216)
+        # self.pepx35 = PEPX(216 * 4 + 224, 216)
+        # self.pepx36 = PEPX(216 * 5 + 224, 224)
 
-        self.pepx41 = PEPX_Downsample(216 * 5 + 224 * 2, 424)
-        self.pepx42 = PEPX(424 * 2, 424)
-        self.pepx43 = PEPX(424 * 3, 400)
+        # self.pepx41 = PEPX_Downsample(216 * 5 + 224 * 2, 424)
+        # self.pepx42 = PEPX(424 * 2, 424)
+        # self.pepx43 = PEPX(424 * 3, 400)
 
         # final layers
         self.flatten = nn.Flatten()
         # 370800? 15x15x(400+424+424+424)
         # NOT 460800? 15x15x(400+400+400+424+424)
-        self.fc = nn.Linear(376200, num_classes)
+        self.fc = nn.Linear(126000, num_classes)
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         # Conv7x7 layer
         x = self.conv7x7(x)
-        x = nn.BatchNorm2d(x.size()[1])(x)
+        # x = nn.BatchNorm2d(x.size()[1])(x)
         x = nn.ReLU(inplace=True)(x)
         
         # print(pepx11")
@@ -138,57 +138,57 @@ class COVIDNet(nn.Module):
         pepx24 = self.pepx24(torch.cat((pepx23, pepx22, pepx21, conv2), dim=1))
         # print(f"size of pepx24 = {pepx24.size()}")
 
-        # print(pepx31")
-        # PEPX31 module
-        cat = torch.cat((pepx24, pepx23, pepx22, pepx21, conv2), dim=1)
-        pepx31 = self.pepx31(cat)
-        conv3 = self.conv3(cat)
-        # print(f"size of pepx31 = {pepx31.size()}, size of conv3 = {conv3.size()}")
+        # # print(pepx31")
+        # # PEPX31 module
+        # cat = torch.cat((pepx24, pepx23, pepx22, pepx21, conv2), dim=1)
+        # pepx31 = self.pepx31(cat)
+        # conv3 = self.conv3(cat)
+        # # print(f"size of pepx31 = {pepx31.size()}, size of conv3 = {conv3.size()}")
 
-        # print(pepx32")
-        # PEPX32 module
-        pepx32 = self.pepx32(torch.cat((pepx31, conv3), dim=1))
-        # print(f"size of pepx32 = {pepx32.size()}")
+        # # print(pepx32")
+        # # PEPX32 module
+        # pepx32 = self.pepx32(torch.cat((pepx31, conv3), dim=1))
+        # # print(f"size of pepx32 = {pepx32.size()}")
 
-        # print(pepx33")
-        # PEPX33 module
-        pepx33 = self.pepx33(torch.cat((pepx32, pepx31, conv3), dim=1))
-        # print(f"size of pepx33 = {pepx33.size()}")
+        # # print(pepx33")
+        # # PEPX33 module
+        # pepx33 = self.pepx33(torch.cat((pepx32, pepx31, conv3), dim=1))
+        # # print(f"size of pepx33 = {pepx33.size()}")
 
-        # print(pepx34")
-        # PEPX34 module
-        pepx34 = self.pepx34(torch.cat((pepx33, pepx32, pepx31, conv3), dim=1))
-        # print(f"size of pepx34 = {pepx34.size()}")
+        # # print(pepx34")
+        # # PEPX34 module
+        # pepx34 = self.pepx34(torch.cat((pepx33, pepx32, pepx31, conv3), dim=1))
+        # # print(f"size of pepx34 = {pepx34.size()}")
 
-        # print(pepx35")
-        # PEPX35 module
-        pepx35 = self.pepx35(torch.cat((pepx34, pepx33, pepx32, pepx31, conv3), dim=1))
-        # print(f"size of pepx35 = {pepx35.size()}")
+        # # print(pepx35")
+        # # PEPX35 module
+        # pepx35 = self.pepx35(torch.cat((pepx34, pepx33, pepx32, pepx31, conv3), dim=1))
+        # # print(f"size of pepx35 = {pepx35.size()}")
 
-        # print(pepx36")
-        # PEPX36 module
-        pepx36 = self.pepx36(torch.cat((pepx35, pepx34, pepx33, pepx32, pepx31, conv3), dim=1))
-        # print(f"size of pepx36 = {pepx36.size()}")
+        # # print(pepx36")
+        # # PEPX36 module
+        # pepx36 = self.pepx36(torch.cat((pepx35, pepx34, pepx33, pepx32, pepx31, conv3), dim=1))
+        # # print(f"size of pepx36 = {pepx36.size()}")
 
-        # print(pepx41")
-        # PEPX41 module
-        cat = torch.cat((pepx36, pepx35, pepx34, pepx33, pepx32, pepx31, conv3), dim=1)
-        pepx41 = self.pepx41(cat)
-        conv4 = self.conv4(cat)
-        # print(f"size of pepx41 = {pepx41.size()}, size of conv4 = {conv4.size()}")
+        # # print(pepx41")
+        # # PEPX41 module
+        # cat = torch.cat((pepx36, pepx35, pepx34, pepx33, pepx32, pepx31, conv3), dim=1)
+        # pepx41 = self.pepx41(cat)
+        # conv4 = self.conv4(cat)
+        # # print(f"size of pepx41 = {pepx41.size()}, size of conv4 = {conv4.size()}")
 
-        # print(pepx42")
-        # PEPX42 module
-        pepx42 = self.pepx42(torch.cat((pepx41, conv4), dim=1))
-        # print(f"size of pepx42 = {pepx42.size()}")
+        # # print(pepx42")
+        # # PEPX42 module
+        # pepx42 = self.pepx42(torch.cat((pepx41, conv4), dim=1))
+        # # print(f"size of pepx42 = {pepx42.size()}")
 
-        # print(pepx43")
-        # PEPX43 module
-        pepx43 = self.pepx43(torch.cat((pepx42, pepx41, conv4), dim=1))
-        # print(f"size of pepx43 = {pepx43.size()}")
+        # # print(pepx43")
+        # # PEPX43 module
+        # pepx43 = self.pepx43(torch.cat((pepx42, pepx41, conv4), dim=1))
+        # # print(f"size of pepx43 = {pepx43.size()}")
     
         # Flatten and FC layer
-        x = self.flatten(torch.cat([pepx43, pepx42, pepx41, conv4], dim=1))
+        x = self.flatten(torch.cat([pepx24, pepx23, pepx22, pepx21, conv2], dim=1))
         # print(f"size of flatten = {x.size()}")
         x = self.fc(x)
         # print(f"size of fc = {x.size()}")
@@ -255,7 +255,7 @@ if __name__ == '__main__':
     # TUNABLE:
     epochs = 22
     # TUNABLE: original 64
-    batch_size = 8
+    batch_size = 2
     # TUNABLE:
     factor = 0.7
     # TUNABLE:
