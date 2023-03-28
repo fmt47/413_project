@@ -13,7 +13,7 @@ class COVIDDataset(Dataset):
         with open(data_file, 'r') as f:
             for line in f:
                 patient_id, filename, label, data_source = line.strip().split(' ')
-                image_path = os.path.join(data_file, filename)
+                image_path = os.path.join(os.path.splitext(data_file)[0], filename)
                 self.data.append((image_path, self.map[label]))
                 
     def __len__(self):
