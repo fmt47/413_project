@@ -1,0 +1,9 @@
+Finetuned resnet:
+    - Best validation accuracy: 98.98%
+    - Training complete in 3:57:56
+    - Test loss: 0.9935, Test accuracy: 96.00%
+
+Trained original resnet:
+    - Best validation accuracy: 97.80%
+    - Training complete in 4:09:38
+    - Test loss: 6.0612, Test accuracy: 91.00%
