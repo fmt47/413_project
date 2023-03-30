@@ -97,7 +97,7 @@ class COVIDNet(nn.Module):
     def forward(self, x):
         # Conv7x7 layer
         x = self.conv7x7(x)
-        x = nn.BatchNorm2d(x.size()[1])(x)
+        # x = nn.BatchNorm2d(x.size()[1])(x)
         x = nn.ReLU(inplace=True)(x)
         
         # print(pepx11")

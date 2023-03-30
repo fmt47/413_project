@@ -7,6 +7,7 @@ from torchvision.transforms import transforms
 import torch.utils.data as data
 import matplotlib.pyplot as plt
 from data import COVIDDataset
+from datetime import datetime
 
 # Things to try: search "TUNABLE"
 
@@ -288,8 +289,8 @@ if __name__ == '__main__':
     val_size = dataset_size - train_size
     train_dataset, val_dataset = data.random_split(dataset, [train_size, val_size])
 
-
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4)
+    # print time used to load data
     val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=4)
     
     # Set up model, optimizer, and loss function
