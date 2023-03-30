@@ -204,9 +204,10 @@ class COVIDNet(nn.Module):
 def train(model, train_loader, optimizer, criterion, device):
     model.train()
     train_loss = 0
-    correct = 0
     false_positive = 0
     false_negative = 0
+    true_negative = 0
+    true_positive = 0
     total = 0
     print(f'Loading # {len(train_loader)} datas')
     
@@ -226,23 +227,23 @@ def train(model, train_loader, optimizer, criterion, device):
         train_loss += loss.item()
         _, predicted = output.max(1)
         total += target.size(0)
-        correct += predicted.eq(target).sum().item()
         false_positive += ((predicted == 1) & (target == 0)).sum().item()
         false_negative += ((predicted == 0) & (target == 1)).sum().item()
+        true_negative += ((predicted == 0) & (target == 0)).sum().item()
+        true_positive += ((predicted == 1) & (target == 1)).sum().item()
 
-        
-    true_negative = total - correct - false_positive - false_negative
-    acc = 100.*correct/total
-    sensitivity = 100.*correct/(correct+false_negative)
+    acc = 100.*(true_positive + true_negative) / total
+    sensitivity = 100.*true_positive/(true_positive+false_negative)
     specificity = 100.*true_negative/(true_negative+false_positive)
     return train_loss, acc, sensitivity, specificity
 
 def validate(model, val_loader, criterion, device):
     model.eval()
     val_loss = 0
-    correct = 0
     false_positive = 0
     false_negative = 0
+    true_negative = 0
+    true_positive = 0
     total = 0
     
     with torch.no_grad():
@@ -252,15 +253,15 @@ def validate(model, val_loader, criterion, device):
             val_loss += criterion(output, target).item()
             _, predicted = output.max(1)
             total += target.size(0)
-            correct += predicted.eq(target).sum().item()
             false_positive += ((predicted == 1) & (target == 0)).sum().item()
             false_negative += ((predicted == 0) & (target == 1)).sum().item()
+            true_negative += ((predicted == 0) & (target == 0)).sum().item()
+            true_positive += ((predicted == 1) & (target == 1)).sum().item()
 
-    true_negative = total - correct - false_positive - false_negative
-    acc = 100.*correct/total
-    sensitivity = 100.*correct/(correct+false_negative)
+    acc = 100.*(true_positive + true_negative) / total
+    sensitivity = 100.*true_positive/(true_positive+false_negative)
     specificity = 100.*true_negative/(true_negative+false_positive)
-    return val_loss, acc, sensitivity, specificity
+    return train_loss, acc, sensitivity, specificity
 
 
 if __name__ == '__main__':
