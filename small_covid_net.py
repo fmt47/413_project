@@ -205,6 +205,8 @@ def train(model, train_loader, optimizer, criterion, device):
     model.train()
     train_loss = 0
     correct = 0
+    false_positive = 0
+    false_negative = 0
     total = 0
     print(f'Loading # {len(train_loader)} datas')
     
@@ -225,14 +227,22 @@ def train(model, train_loader, optimizer, criterion, device):
         _, predicted = output.max(1)
         total += target.size(0)
         correct += predicted.eq(target).sum().item()
+        false_positive += ((predicted == 1) & (target == 0)).sum().item()
+        false_negative += ((predicted == 0) & (target == 1)).sum().item()
+
         
+    true_negative = total - correct - false_positive - false_negative
     acc = 100.*correct/total
-    return train_loss, acc
+    sensitivity = 100.*correct/(correct+false_negative)
+    specificity = 100.*true_negative/(true_negative+false_positive)
+    return train_loss, acc, sensitivity, specificity
 
 def validate(model, val_loader, criterion, device):
     model.eval()
     val_loss = 0
     correct = 0
+    false_positive = 0
+    false_negative = 0
     total = 0
     
     with torch.no_grad():
@@ -243,9 +253,14 @@ def validate(model, val_loader, criterion, device):
             _, predicted = output.max(1)
             total += target.size(0)
             correct += predicted.eq(target).sum().item()
-        
+            false_positive += ((predicted == 1) & (target == 0)).sum().item()
+            false_negative += ((predicted == 0) & (target == 1)).sum().item()
+
+    true_negative = total - correct - false_positive - false_negative
     acc = 100.*correct/total
-    return val_loss, acc
+    sensitivity = 100.*correct/(correct+false_negative)
+    specificity = 100.*true_negative/(true_negative+false_positive)
+    return val_loss, acc, sensitivity, specificity
 
 
 if __name__ == '__main__':
@@ -313,8 +328,8 @@ if __name__ == '__main__':
     
     for epoch in range(1, epochs+1):
         print(f'Epoch {epoch}')
-        train_loss, train_acc = train(model, train_loader, optimizer, criterion, device)
-        val_loss, val_acc = validate(model, val_loader, criterion, device)
+        train_loss, train_acc, train_sensitivity, train_specificity = train(model, train_loader, optimizer, criterion, device)
+        val_loss, val_acc, val_sensitivity, val_specificity = validate(model, val_loader, criterion, device)
 
         # record training and validation losses and accuracies
         train_losses.append(train_loss)
@@ -325,6 +340,8 @@ if __name__ == '__main__':
         scheduler.step(val_loss)
         
         print(f'Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}')
+        print(f'Train Sensitivity: {train_sensitivity:.2f}, Train Specificity: {train_specificity:.2f}')
+        print(f'Val Sensitivity: {val_sensitivity:.2f}, Val Specificity: {val_specificity:.2f}')
         
         if val_acc > best_acc:
             best_acc = val_acc
@@ -352,6 +369,8 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load('covid_net.pt'))
 
     # evaluate model on test set
-    test_loss, test_acc = validate(model, test_loader, criterion, device)
+    test_loss, test_acc, test_sensitivity, test_specificity = validate(model, test_loader, criterion, device)
     print(f'Test loss: {test_loss:.4f}, Test accuracy: {test_acc:.2f}%')
+    print(f'Test sensitivity: {test_sensitivity:.2f}%')
+    print(f'Test specificity: {test_specificity:.2f}%')
 

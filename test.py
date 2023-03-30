@@ -30,5 +30,7 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load('covid_net.pt', map_location=device))
 
     # evaluate model on test set
-    test_loss, test_acc = validate(model, test_loader, criterion, device)
+    test_loss, test_acc, sensitivity, specificity = validate(model, test_loader, criterion, device)
     print(f'Test loss: {test_loss:.4f}, Test accuracy: {test_acc:.2f}%')
+    print(f'Sensitivity: {sensitivity:.2f}, Specificity: {specificity:.2f}')
+    
