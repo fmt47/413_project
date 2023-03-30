@@ -4,8 +4,12 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torch.nn.functional as F
+import sys
 
 if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Please provide exactly one model pt filename")
+        sys.exit(1)
     
     # transforms
     criterion = F.cross_entropy
@@ -27,10 +31,9 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=4)
 
     # load best model
-    model.load_state_dict(torch.load('covid_net.pt', map_location=device))
+    model.load_state_dict(torch.load(sys.argv[1], map_location=device))
 
     # evaluate model on test set
     test_loss, test_acc, sensitivity, specificity = validate(model, test_loader, criterion, device)
     print(f'Test loss: {test_loss:.4f}, Test accuracy: {test_acc:.2f}%')
     print(f'Sensitivity: {sensitivity:.2f}, Specificity: {specificity:.2f}')
-    

@@ -261,7 +261,7 @@ def validate(model, val_loader, criterion, device):
     acc = 100.*(true_positive + true_negative) / total
     sensitivity = 100.*true_positive/(true_positive+false_negative)
     specificity = 100.*true_negative/(true_negative+false_positive)
-    return train_loss, acc, sensitivity, specificity
+    return val_loss, acc, sensitivity, specificity
 
 
 if __name__ == '__main__':
