@@ -1,0 +1,8 @@
+.hypothesis
+.vscode
+__pycache__
+csc413proj_venv
+test
+train
+test.txt
+train.txt
