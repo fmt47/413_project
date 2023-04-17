@@ -7,3 +7,8 @@ Trained original resnet:
     - Best validation accuracy: 97.80%
     - Training complete in 4:09:38
     - Test loss: 6.0612, Test accuracy: 91.00%
+
+Adadelta Finetuned resnet:
+    - Best validation accuracy: 99.00%
+    - Training complete in 2:12:04
+    - Test loss: 0.7256, Test accuracy: 98.25%
