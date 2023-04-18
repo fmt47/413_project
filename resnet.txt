@@ -8,7 +8,50 @@ Trained original resnet:
     - Training complete in 4:09:38
     - Test loss: 6.0612, Test accuracy: 91.00%
 
+hyperparameters:
+    lr = 2e-4
+    # TUNABLE:
+    epochs = 10
+    batch_size = 16
+
+ADAM+CE Finetuned resnet:
+    - Best validation accuracy: 99.00% -- Acquired with epoch 6
+    - Training complete in 2:01:19
+    - Test loss: 3.1218, Test accuracy: 96.750%
+    - Test sensitivity: 0.935%, Test specificity: 1.000%, Test F1 score: 0.966%
+
+ADAM+NLLL Fintuned resnet:
+    - Best validation accuracy: 98.63% -- Acquired with epoch 10
+    - Training complete in 1:51:39
+    - Test loss: 5.2757, Test accuracy: 95.750%
+    - Test sensitivity: 0.915%, Test specificity: 1.000%, Test F1 score: 0.956%
+
+ADAM+MSE Fintuned resnet:
+    - Best validation accuracy: 52.38% -- Acquired with epoch 6
+    - Training complete in 2:00:45
+    - Test loss: 41.8400, Test accuracy: 49.750%
+    - Test sensitivity: 0.970%, Test specificity: 0.025%, Test F1 score: 0.659%
+
+RMSPROP Finetuned resnet:
+    - Best validation accuracy: 98.00% -- Acquired with epoch 8
+    - Training complete in 1:52:57
+    - Test loss: 2.7892, Test accuracy: 98.00%
+    - Test sensitivity: 0.960%, Test specificity: 1.000%, Test F1 score: 0.980%
+
 Adadelta Finetuned resnet:
-    - Best validation accuracy: 99.00%
-    - Training complete in 2:12:04
-    - Test loss: 0.7256, Test accuracy: 98.25%
+    - Best validation accuracy: 98.68% -- Acquired with epoch 3
+    - Training complete in 2:00:36
+    - Test loss: 2.3925, Test accuracy: 97.750%
+    - Test sensitivity: 0.955%, Test specificity: 1.000%, Test F1 score: 0.977%
+
+SGD Finetuned resnet:
+    - Best validation accuracy: 98.85% -- Acquired with epoch 7
+    - Training complete in 2:06:49
+    - Test loss: 4.4218, Test accuracy: 94.750%
+    - Test sensitivity: 0.895%, Test specificity: 1.000%, Test F1 score: 0.945%
+
+AdamW Finetuned resnet:
+    - Best validation accuracy: 99.00% -- Acquired with epoch 6
+    - Training complete in 1:44:56
+    - Test loss: 3.7281, Test accuracy: 95.000%
+    - Test sensitivity: 0.900%, Test specificity: 1.000%, Test F1 score: 0.947%
