@@ -27,10 +27,10 @@ ADAM+NLLL Fintuned resnet:
     - Test sensitivity: 0.915%, Test specificity: 1.000%, Test F1 score: 0.956%
 
 ADAM+MSE Fintuned resnet:
-    - Best validation accuracy: 52.38% -- Acquired with epoch 6
-    - Training complete in 2:00:45
-    - Test loss: 41.8400, Test accuracy: 49.750%
-    - Test sensitivity: 0.970%, Test specificity: 0.025%, Test F1 score: 0.659%
+    - Best validation accuracy: 98.93% -- Acquired with epoch 8
+    - Training complete in 1:59:24
+    - Test loss: 39.3618, Test accuracy: 96.750%
+    - Test sensitivity: 0.935%, Test specificity: 1.000%, Test F1 score: 0.966%
 
 RMSPROP Finetuned resnet:
     - Best validation accuracy: 98.00% -- Acquired with epoch 8
