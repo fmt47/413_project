@@ -17,3 +17,5 @@ Run the model by executing the file `small_covid_net.ipynb`, preferably on Kaggl
 <img width="558" alt="image" src="https://user-images.githubusercontent.com/32078486/233146128-b10bb290-8d21-445a-b36f-2fc47ffa5488.png">
 
 Run the model by executing the files `shallowCNN/train_ce_nll.py` and `shallowCNN/train_mse.py`
+
+### Note: file paths in the .py or .ipynb files may need to be changed depending on the executing environment
