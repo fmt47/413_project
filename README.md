@@ -6,6 +6,8 @@ Our report can be found in `report.pdf`
 ## Train-validation-test split:
 On around 28000 training data, performed train-validation split of 80%-20%
 
+Train on model on train set, use the model with highest validation accuracy among all epochs on test set
+
 All evaluation metrics reported based on an unseen test dataset: 200 negative cases, 200 positive cases
 
 ## Model 1: Modified ResNet 152
